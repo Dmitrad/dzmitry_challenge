@@ -51,8 +51,7 @@ resource "aws_cloudwatch_metric_alarm" "test" {
  dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.test.name
   }
-  # alarm_description = "This metric monitors ec2 cpu utilization"
-  alarm_actions     = [aws_autoscaling_policy.test.arn]
+    alarm_actions     = [aws_autoscaling_policy.test.arn]
 }
 
 resource "aws_autoscaling_policy" "test_down" {
@@ -79,8 +78,7 @@ resource "aws_cloudwatch_metric_alarm" "test_down" {
  dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.test.name
   }
-  # alarm_description = "This metric monitors ec2 cpu utilization"
-  alarm_actions     = [aws_autoscaling_policy.test_down.arn]
+    alarm_actions     = [aws_autoscaling_policy.test_down.arn]
 }
 
 resource "aws_lb" "test" {
@@ -110,84 +108,43 @@ resource "aws_lb_target_group" "http" {
     timeout             = 5
     port                = "traffic-port"
     path                = "/"
-    matcher             = "200-320" #success code
+    matcher             = "200-320"
 
   }
 }
 
-resource "aws_lb_target_group" "https" {
-  name     = "https"
-  port     = 443
-  protocol = "HTTPS"
-  vpc_id   = aws_vpc.main.id
-
-  health_check {
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
-    timeout             = 5
-    port                = "traffic-port"
-    path                = "/"
-    matcher             = "200-320" #success code
-
-  }
-}
-
-# Create a new ALB Target Group attachment Images
+# Create a new ALB Target Group attachment
 resource "aws_autoscaling_attachment" "asg_attachment_http" {
   autoscaling_group_name = aws_autoscaling_group.test.id
   lb_target_group_arn    = aws_lb_target_group.http.arn
 }
 
-# Create a new ALB Target Group attachment Videos
-resource "aws_autoscaling_attachment" "asg_attachment_https" {
-  autoscaling_group_name = aws_autoscaling_group.test.id
-  lb_target_group_arn    = aws_lb_target_group.https.arn
+
+resource "aws_lb_listener" "lb_listener" {
+  load_balancer_arn = aws_lb.test.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.http.arn
+  }
+}
+
+resource "aws_lb_listener" "lb_listener_https" {
+  load_balancer_arn = aws_lb.test.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:us-east-1:463496056235:certificate/d9ad112a-1b17-4516-8243-00e478469337"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.http.arn
+  }
 }
 
 
-# resource "aws_lb_listener" "lb_listener" {
-#   load_balancer_arn = aws_lb.test.arn
-#   port              = "80"
-#   protocol          = "HTTP"
-
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.http.arn
-#   }
-# }
-
-# resource "aws_lb_listener_rule" "rule_1_images" {
-#   listener_arn = aws_lb_listener.lb_listener.arn
-#   priority     = 100
-
-#   action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.images.arn
-#   }
-
-#   condition {
-#     path_pattern {
-#       values = ["/images/"]
-#     }
-#   }
-# }
-
-# resource "aws_lb_listener_rule" "rule_1_videos" {
-#   listener_arn = aws_lb_listener.lb_listener.arn
-#   priority     = 200
-
-#   action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.videos.arn
-#   }
-
-#   condition {
-#     path_pattern {
-#       values = ["/videos/"]
-#     }
-#   }
-
-# }
 
 
 
