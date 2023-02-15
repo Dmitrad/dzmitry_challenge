@@ -1,5 +1,5 @@
 resource "aws_vpc" "main" {
-  cidr_block = var.vpc_cidr_block 
+  cidr_block = var.vpc_cidr_block
 
   tags = {
     Name = "test"
@@ -8,8 +8,8 @@ resource "aws_vpc" "main" {
 
 resource "aws_subnet" "public_1" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.subnet_cidr_block_1 
-  availability_zone = var.zone1               
+  cidr_block        = var.subnet_cidr_block_1
+  availability_zone = var.zone1
 
   tags = {
     Name = "Public1-test"
@@ -18,8 +18,8 @@ resource "aws_subnet" "public_1" {
 
 resource "aws_subnet" "public_2" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.subnet_cidr_block_2 
-  availability_zone = var.zone2               
+  cidr_block        = var.subnet_cidr_block_2
+  availability_zone = var.zone2
 
   tags = {
     Name = "Public2-test"

@@ -4,7 +4,7 @@ resource "aws_security_group" "allow_tls" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description = "TLC from VPC" 
+    description = "TLC from VPC"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"

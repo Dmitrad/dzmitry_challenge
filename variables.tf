@@ -41,9 +41,9 @@ variable "user_data_file" {
 }
 
 variable "tag_images" {
-  type = string
+  type    = string
   default = "images"
- 
+
 }
 
 #VARIABLE SG

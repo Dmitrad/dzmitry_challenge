@@ -6,7 +6,7 @@ resource "aws_launch_configuration" "test" {
   security_groups             = [aws_security_group.allow_tls.id]
   user_data                   = file(var.user_data_file)
   key_name                    = var.ssh_key_name
-  
+
 }
 
 
@@ -33,7 +33,7 @@ resource "aws_autoscaling_policy" "test" {
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 100
   autoscaling_group_name = aws_autoscaling_group.test.name
-  policy_type = "SimpleScaling"
+  policy_type            = "SimpleScaling"
 }
 
 resource "aws_cloudwatch_metric_alarm" "test" {
@@ -48,10 +48,10 @@ resource "aws_cloudwatch_metric_alarm" "test" {
   alarm_description         = "This metric monitors ec2 cpu utilization"
   insufficient_data_actions = []
 
- dimensions = {
+  dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.test.name
   }
-    alarm_actions     = [aws_autoscaling_policy.test.arn]
+  alarm_actions = [aws_autoscaling_policy.test.arn]
 }
 
 resource "aws_autoscaling_policy" "test_down" {
@@ -60,7 +60,7 @@ resource "aws_autoscaling_policy" "test_down" {
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 100
   autoscaling_group_name = aws_autoscaling_group.test.name
-  policy_type = "SimpleScaling"
+  policy_type            = "SimpleScaling"
 }
 
 resource "aws_cloudwatch_metric_alarm" "test_down" {
@@ -75,10 +75,10 @@ resource "aws_cloudwatch_metric_alarm" "test_down" {
   alarm_description         = "This metric monitors ec2 cpu utilization"
   insufficient_data_actions = []
 
- dimensions = {
+  dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.test.name
   }
-    alarm_actions     = [aws_autoscaling_policy.test_down.arn]
+  alarm_actions = [aws_autoscaling_policy.test_down.arn]
 }
 
 resource "aws_lb" "test" {
@@ -137,7 +137,7 @@ resource "aws_lb_listener" "lb_listener_https" {
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   certificate_arn   = "arn:aws:acm:us-east-1:463496056235:certificate/d9ad112a-1b17-4516-8243-00e478469337"
-
+  
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.http.arn
